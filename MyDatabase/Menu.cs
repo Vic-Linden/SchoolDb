@@ -40,6 +40,7 @@ namespace MyDatabase
                             "Add new student",
                             "[red]Delete student[/]",
                             "View all staff",
+                            "Teachers per department",
                             "Add new staff",
                             "[red]Delete staff[/]",
                             "Exit"
@@ -61,6 +62,9 @@ namespace MyDatabase
                         break;
                     case "View all staff":
                         _staff.ViewAllStaff();
+                        break;
+                    case "Teachers per department":
+                        //_staff.TeacherPerDepartment();
                         break;
                     case "Add new staff":
                         _staff.AddNewStaff();

@@ -20,6 +20,8 @@ public partial class SchoolDbContext : DbContext
 
     public virtual DbSet<Course> Courses { get; set; }
 
+    public virtual DbSet<Department> Departments { get; set; }
+
     public virtual DbSet<Grade> Grades { get; set; }
 
     public virtual DbSet<Staff> Staff { get; set; }
@@ -56,6 +58,18 @@ public partial class SchoolDbContext : DbContext
 
             entity.Property(e => e.CourseId).HasColumnName("CourseID");
             entity.Property(e => e.CourseName).HasMaxLength(100);
+            entity.Property(e => e.IsActive).HasDefaultValue(true, "DF_Course_IsActive");
+        });
+
+        modelBuilder.Entity<Department>(entity =>
+        {
+            entity.HasKey(e => e.DepartmentId).HasName("PK__Departme__B2079BEDAC4E8E63");
+
+            entity.ToTable("Department");
+
+            entity.HasIndex(e => e.DepartmentName, "UQ__Departme__D949CC34ED772271").IsUnique();
+
+            entity.Property(e => e.DepartmentName).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Grade>(entity =>
@@ -97,7 +111,12 @@ public partial class SchoolDbContext : DbContext
             entity.Property(e => e.PersonId).HasColumnName("PersonID");
             entity.Property(e => e.FirstName).HasMaxLength(100);
             entity.Property(e => e.LastName).HasMaxLength(100);
+            entity.Property(e => e.MonthlySalary).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Role).HasMaxLength(100);
+
+            entity.HasOne(d => d.Department).WithMany(p => p.Staff)
+                .HasForeignKey(d => d.DepartmentId)
+                .HasConstraintName("FK_Staff_Department");
         });
 
         modelBuilder.Entity<Student>(entity =>
