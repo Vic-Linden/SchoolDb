@@ -132,6 +132,66 @@ namespace MyDatabase
 
             AnsiConsole.Write(table);
         }
+        public void ViewStudentDetail() 
+        {
+            var students = _context.Students
+                .Include(s => s.Class)
+                .Include(s => s.Grades)
+                .ThenInclude(g => g.Course)
+                .Include(s => s.Grades)
+                .ThenInclude(g => g.Teacher)
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
+                .ToList();
+
+            if (!students.Any()) 
+            {
+                AnsiConsole.MarkupLine("[yellow]No students found.[/]");
+                return;
+            }
+
+            foreach (var s in students) 
+            {
+                var studentName = $"{s.FirstName ?? ""} {s.LastName ?? ""}".Trim();
+                var className = s.Class?.ClassName ?? "No class";
+
+                AnsiConsole.Write(new Rule($"[bold]{studentName}[/] [grey](Class: {className})[/]").RuleStyle("grey").Centered());
+
+                //If student does not have grade.
+                if (s.Grades == null || !s.Grades.Any()) 
+                {
+                    AnsiConsole.MarkupLine("[grey]No grades found for this student.[/]\n");
+                    continue;
+                }
+
+                var table = new Table()
+                    .AddColumn("Course")
+                    .AddColumn("Grade")
+                    .AddColumn("Date")
+                    .AddColumn("Teacher");
+
+                //Sort grade, ThenBy CourseName
+                var grades = s.Grades
+                    .OrderByDescending(g => g.GradeDate)
+                    .ThenBy(g => g.Course?.CourseName);
+
+                foreach (var g in grades) 
+                {
+                    //Loops through each grade and adds course, grade, date, and teacher to the table.
+                    var courseName = g.Course?.CourseName ?? "Unknown course";
+                    var grade = g.Grade1 ?? "";
+                    var date = g.GradeDate.ToString("yyyy-MM-dd");
+
+                    var teacherName = g.Teacher != null
+                        ? $"{g.Teacher.FirstName ?? ""} {g.Teacher.LastName ?? ""}".Trim() : "Unknown teacher";
+
+                    table.AddRow(courseName, grade, date, teacherName);
+                }
+
+                AnsiConsole.Write(table);
+                AnsiConsole.WriteLine();
+            }
+        }
 
         public void AddNewStudent()
         {

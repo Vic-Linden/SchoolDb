@@ -32,17 +32,20 @@ namespace MyDatabase
                 var choice = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("[bold gold1]What would you like to do?[/]")
-                        .PageSize(10)
+                        .PageSize(12)
                         .HighlightStyle(new Style(Color.Gold1))
                         .AddChoices(
                             "View all students",
                             "View students from class",
+                            "View student detail",
                             "Add new student",
                             "[red]Delete student[/]",
                             "View all staff",
                             "Teachers per department",
                             "Add new staff",
                             "[red]Delete staff[/]",
+                            "View active courses",
+                            "[green]Set grade[/]",
                             "Exit"
                         ));
 
@@ -54,6 +57,9 @@ namespace MyDatabase
                     case "View students from class":
                         _students.ViewStudentsFromClass();
                         break;
+                    case "View student detail":
+                        _students.ViewStudentDetail();
+                        break;
                     case "Add new student":
                         _students.AddNewStudent();
                         break;
@@ -64,13 +70,19 @@ namespace MyDatabase
                         _staff.ViewAllStaff();
                         break;
                     case "Teachers per department":
-                        //_staff.TeacherPerDepartment();
+                        _staff.TeachersPerDepartment();
                         break;
                     case "Add new staff":
                         _staff.AddNewStaff();
                         break;
                     case "[red]Delete staff[/]":
                         _staff.DeleteStaff();
+                        break;
+                    case "View active courses":
+                        _staff.ViewActiveCourses();
+                        break;
+                    case "[green]Set grade[/]":
+                        _staff.SetGradeWithTransaction();
                         break;
                     case "Exit":
                         AnsiConsole.MarkupLine("[bold gold1]Thank you for visiting![/]");
