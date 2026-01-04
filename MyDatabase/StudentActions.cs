@@ -155,12 +155,12 @@ namespace MyDatabase
                 var studentName = $"{s.FirstName ?? ""} {s.LastName ?? ""}".Trim();
                 var className = s.Class?.ClassName ?? "No class";
 
-                AnsiConsole.Write(new Rule($"[bold]{studentName}[/] [grey](Class: {className})[/]").RuleStyle("grey").Centered());
+                AnsiConsole.Write(new Rule($"[bold gold1]{studentName}[/] [yellow](Class: {className})[/]").RuleStyle("grey").Centered());
 
                 //If student does not have grade.
                 if (s.Grades == null || !s.Grades.Any()) 
                 {
-                    AnsiConsole.MarkupLine("[grey]No grades found for this student.[/]\n");
+                    AnsiConsole.Write(new Align(new Markup("[red]No grades found for this student.[/]"), HorizontalAlignment.Center));
                     continue;
                 }
 
@@ -188,8 +188,10 @@ namespace MyDatabase
                     table.AddRow(courseName, grade, date, teacherName);
                 }
 
-                AnsiConsole.Write(table);
+                AnsiConsole.Write(new Align(table, HorizontalAlignment.Center));
                 AnsiConsole.WriteLine();
+
+                
             }
         }
 
